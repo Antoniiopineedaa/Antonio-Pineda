@@ -100,9 +100,9 @@ transparente. (Si quieres que regenere la tarjeta de redes con otra foto, pídem
 
 La web ya viene preparada para Google (títulos, descripciones, Open Graph, Twitter,
 datos estructurados JSON-LD, `sitemap.xml` y `robots.txt`). Solo falta **una cosa**:
-cambiar el dominio de ejemplo `antoniopineda.com` por el tuyo de verdad.
+cambiar el dominio de ejemplo `antoniopinedaguerrero.com` por el tuyo de verdad.
 
-Busca y reemplaza `https://antoniopineda.com` por tu dominio en estos archivos:
+Busca y reemplaza `https://antoniopinedaguerrero.com` por tu dominio en estos archivos:
 `index.html`, `sobre-mi.html`, `newsletter.html`, `articulos/caso-01.html`,
 `sitemap.xml` y `robots.txt`.
 

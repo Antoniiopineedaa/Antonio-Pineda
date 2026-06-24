@@ -559,6 +559,21 @@ h1, h2, h3, h4 { line-height: 1.04; letter-spacing: -0.02em; font-weight: 500; t
 .cred span { font-family: var(--mono); font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-mute); }
 @media (min-width: 620px) { .creds { grid-template-columns: repeat(3, 1fr); } }
 
+/* Aviso de cookies (consentimiento RGPD) */
+.cookie-banner {
+  position: fixed; left: 50%; bottom: 1rem; transform: translate(-50%, 150%);
+  z-index: 9400; width: min(680px, calc(100% - 2rem));
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .8rem 1.2rem;
+  background: var(--paper); border: 1px solid var(--line); border-radius: 16px;
+  padding: 1rem 1.2rem; box-shadow: 0 24px 60px -28px rgba(11,61,46,.5);
+  transition: transform .5s var(--ease-out);
+}
+.cookie-banner.is-in { transform: translate(-50%, 0); }
+.cookie-banner p { flex: 1 1 300px; margin: 0; font-size: .88rem; line-height: 1.5; color: var(--ink-soft); }
+.cookie-actions { display: flex; gap: .6rem; flex: 0 0 auto; }
+.cookie-banner .btn { padding: .6rem 1.1rem; font-size: .85rem; }
+@media (prefers-reduced-motion: reduce) { .cookie-banner { transition: none; } }
+
 /* Hitos / stats — 4 tarjetas vivas, sin huecos (4 / 2x2 / 1) */
 .stats { display: grid; gap: 1rem; grid-template-columns: 1fr; }
 @media (min-width: 560px) { .stats { grid-template-columns: 1fr 1fr; } }

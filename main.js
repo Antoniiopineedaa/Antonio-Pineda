@@ -409,6 +409,57 @@
   }
 
   /* ---------------------------------------------------------------------------
+     Google Analytics + consentimiento de cookies (RGPD)
+     - Sin gaId: la web no usa cookies ni muestra aviso.
+     - Con gaId: GA solo se carga si el visitante pulsa "Aceptar".
+     --------------------------------------------------------------------------- */
+  function loadGA() {
+    var id = DATA.gaId;
+    if (!id || window.__gaLoaded) return;
+    window.__gaLoaded = true;
+    var s = document.createElement("script");
+    s.async = true;
+    s.src = "https://www.googletagmanager.com/gtag/js?id=" + encodeURIComponent(id);
+    document.head.appendChild(s);
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { window.dataLayer.push(arguments); }
+    window.gtag = gtag;
+    gtag("js", new Date());
+    gtag("config", id, { anonymize_ip: true });
+  }
+
+  function initConsent() {
+    if (!DATA.gaId) return;                     // sin analítica => web sin cookies
+    var choice = null;
+    try { choice = localStorage.getItem("cc_consent"); } catch (e) {}
+    if (choice === "granted") { loadGA(); return; }
+    if (choice === "denied") return;
+
+    var bar = document.createElement("div");
+    bar.className = "cookie-banner";
+    bar.setAttribute("role", "dialog");
+    bar.setAttribute("aria-label", "Aviso de cookies");
+    bar.innerHTML =
+      '<p>Uso cookies de <strong>analítica</strong> (Google Analytics) para entender qué te interesa y mejorar la web. ' +
+      '<a class="ulink" href="/privacidad.html">Más información</a>.</p>' +
+      '<div class="cookie-actions">' +
+        '<button class="btn btn-ghost" type="button" data-cc="denied">Rechazar</button>' +
+        '<button class="btn btn-signal" type="button" data-cc="granted">Aceptar</button>' +
+      '</div>';
+    document.body.appendChild(bar);
+    requestAnimationFrame(function () { bar.classList.add("is-in"); });
+    bar.addEventListener("click", function (e) {
+      var b = e.target.closest && e.target.closest("[data-cc]");
+      if (!b) return;
+      var v = b.getAttribute("data-cc");
+      try { localStorage.setItem("cc_consent", v); } catch (e2) {}
+      bar.classList.remove("is-in");
+      setTimeout(function () { if (bar.parentNode) bar.parentNode.removeChild(bar); }, 450);
+      if (v === "granted") loadGA();
+    });
+  }
+
+  /* ---------------------------------------------------------------------------
      Boot
      --------------------------------------------------------------------------- */
   function boot() {
@@ -424,6 +475,7 @@
     safe(initRevealSafety, "initRevealSafety");
     safe(initMagnetic, "initMagnetic");
     safe(initCountUp, "initCountUp");
+    safe(initConsent, "initConsent");
 
     if (window.gsap && window.ScrollTrigger) {
       try { gsap.registerPlugin(ScrollTrigger); } catch (_) {}

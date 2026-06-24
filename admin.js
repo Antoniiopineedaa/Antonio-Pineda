@@ -23,7 +23,7 @@
     var s = window.__SITE__ || {};
     return {
       config: {
-        siteUrl: s.siteUrl || "https://antoniopineda.com",
+        siteUrl: s.siteUrl || "https://antoniopinedaguerrero.com",
         brand: s.brand || "Antonio Pineda",
         role: s.role || "Estudiante de medicina",
         field: s.field || "Cardiología & Neurociencia",
@@ -31,6 +31,7 @@
         newsletterTagline: s.newsletterTagline || "",
         youtubeUrl: s.youtubeUrl || "",
         contactEmail: s.contactEmail || "",
+        gaId: s.gaId || "",
         social: {
           youtube: (s.social && s.social.youtube) || "",
           linkedin: (s.social && s.social.linkedin) || "",
@@ -98,6 +99,7 @@
       youtubeUrl: c.youtubeUrl,
       social: c.social,
       contactEmail: c.contactEmail,
+      gaId: c.gaId,
       beehiiv: c.beehiiv,
       siteUrl: c.siteUrl,
       newsletters: state.newsletters.map(function (n) {
@@ -162,7 +164,7 @@
 '  <link rel="preconnect" href="https://fonts.googleapis.com" />',
 '  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />',
 '  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400;1,9..144,500&family=Hanken+Grotesk:wght@300;400;500;600&family=Spline+Sans+Mono:wght@400;500&display=swap" />',
-'  <link rel="stylesheet" href="../styles.css?v=20260623g" />',
+'  <link rel="stylesheet" href="../styles.css?v=20260623h" />',
 '  <script type="application/ld+json">',
 '  {"@context":"https://schema.org","@type":"Article","headline":' + JSON.stringify(title) + ',"author":{"@type":"Person","name":' + JSON.stringify(c.brand) + '},"datePublished":' + JSON.stringify(n.iso || "") + ',"inLanguage":"es","image":' + JSON.stringify(base + "/assets/img/og-card.png") + ',"mainEntityOfPage":' + JSON.stringify(canonical) + ',"isAccessibleForFree":' + (n.premium ? "false" : "true") + '}',
 '  <\/script>',
@@ -238,8 +240,8 @@ teaserHtml,
 '  <footer class="footer"><div class="container"><div class="footer-bottom" style="border:0"><span>© <span id="year">2026</span> ' + esc(c.brand) + ' · ' + esc(c.role) + '</span><span><a href="../privacidad.html">Privacidad</a> · Divulgación, no consejo médico</span></div></div></footer>',
 '  <script defer src="../lib/gsap.min.js"></script>',
 '  <script defer src="../lib/ScrollTrigger.min.js"></script>',
-'  <script defer src="../lib/data.js?v=20260623g"></script>',
-'  <script defer src="../main.js?v=20260623g"></script>',
+'  <script defer src="../lib/data.js?v=20260623h"></script>',
+'  <script defer src="../main.js?v=20260623h"></script>',
 '  <script>document.getElementById("year").textContent=new Date().getFullYear();</script>',
 '</body>',
 '</html>',
@@ -268,6 +270,7 @@ teaserHtml,
         field("YouTube (social)", c.social.youtube, "social.youtube") +
         field("LinkedIn", c.social.linkedin, "social.linkedin") +
         field("Instagram", c.social.instagram, "social.instagram") +
+        field("Google Analytics (ID)", c.gaId, "gaId", "G-XXXXXXXXXX") +
       '</div>' +
       '<h3 class="adm-sub">Beehiiv (cobro y suscripción)</h3>' +
       '<div class="adm-grid">' +
