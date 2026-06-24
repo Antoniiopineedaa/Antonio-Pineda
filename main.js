@@ -409,9 +409,9 @@
   }
 
   /* ---------------------------------------------------------------------------
-     Google Analytics + consentimiento de cookies (RGPD)
-     - Sin gaId: la web no usa cookies ni muestra aviso.
-     - Con gaId: GA solo se carga si el visitante pulsa "Aceptar".
+     Analítica + consentimiento de cookies (RGPD)
+     - Sin gaId ni clarityId: la web no usa cookies ni muestra aviso.
+     - Con IDs: GA y Clarity solo se cargan si el visitante pulsa "Aceptar".
      --------------------------------------------------------------------------- */
   function loadGA() {
     var id = DATA.gaId;
@@ -428,11 +428,28 @@
     gtag("config", id, { anonymize_ip: true });
   }
 
+  function loadClarity() {
+    var id = DATA.clarityId;
+    if (!id || window.__clarityLoaded) return;
+    window.__clarityLoaded = true;
+    (function (c, l, a, r, i, t, y) {
+      c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments); };
+      t = l.createElement(r); t.async = 1;
+      t.src = "https://www.clarity.ms/tag/" + i;
+      y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+    })(window, document, "clarity", "script", id);
+  }
+
+  function loadAnalytics() {
+    loadGA();
+    loadClarity();
+  }
+
   function initConsent() {
-    if (!DATA.gaId) return;                     // sin analítica => web sin cookies
+    if (!DATA.gaId && !DATA.clarityId) return;  // sin analítica => web sin cookies
     var choice = null;
     try { choice = localStorage.getItem("cc_consent"); } catch (e) {}
-    if (choice === "granted") { loadGA(); return; }
+    if (choice === "granted") { loadAnalytics(); return; }
     if (choice === "denied") return;
 
     var bar = document.createElement("div");
@@ -440,7 +457,7 @@
     bar.setAttribute("role", "dialog");
     bar.setAttribute("aria-label", "Aviso de cookies");
     bar.innerHTML =
-      '<p>Uso cookies de <strong>analítica</strong> (Google Analytics) para entender qué te interesa y mejorar la web. ' +
+      '<p>Uso cookies de <strong>analítica</strong> (Google Analytics y Microsoft Clarity) para entender qué te interesa y mejorar la web. ' +
       '<a class="ulink" href="/privacidad.html">Más información</a>.</p>' +
       '<div class="cookie-actions">' +
         '<button class="btn btn-ghost" type="button" data-cc="denied">Rechazar</button>' +
@@ -455,7 +472,7 @@
       try { localStorage.setItem("cc_consent", v); } catch (e2) {}
       bar.classList.remove("is-in");
       setTimeout(function () { if (bar.parentNode) bar.parentNode.removeChild(bar); }, 450);
-      if (v === "granted") loadGA();
+      if (v === "granted") loadAnalytics();
     });
   }
 
