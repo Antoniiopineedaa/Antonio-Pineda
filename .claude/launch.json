@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "caso-cero",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["tools/server.cjs"],
+      "port": 8765
+    }
+  ]
+}

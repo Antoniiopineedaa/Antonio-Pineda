@@ -1,0 +1,22 @@
+# Cabeceras para Netlify y Cloudflare Pages (equivalente al .htaccess de Hostinger).
+# En Hostinger/Apache se usa .htaccess; este archivo lo ignoran y no molesta.
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+
+# HTML, JS, CSS y JSON: revalidar siempre (ves los cambios al instante tras subir)
+/*.html
+  Cache-Control: no-cache, must-revalidate
+/*.js
+  Cache-Control: no-cache, must-revalidate
+/*.css
+  Cache-Control: no-cache, must-revalidate
+/*.json
+  Cache-Control: no-cache, must-revalidate
+
+# Imágenes y fuentes: caché larga (cambian poco)
+/assets/img/*
+  Cache-Control: public, max-age=2592000
+/assets/favicon.svg
+  Cache-Control: public, max-age=2592000

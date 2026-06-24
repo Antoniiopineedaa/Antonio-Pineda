@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panel · Antonio Pineda</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500&family=Hanken+Grotesk:wght@300;400;500;600&family=Spline+Sans+Mono:wght@400;500&display=swap" />
+  <link rel="stylesheet" href="styles.css?v=20260623g" />
+  <style>
+    .grain, .diag-light { display: none; }
+    .admin { max-width: 1000px; margin: 0 auto; padding: 2.5rem var(--gutter) 6rem; position: relative; z-index: 2; }
+    .adm-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .adm-top h1 { font-family: var(--serif); font-size: clamp(2rem, 5vw, 3rem); }
+    .adm-top h1 em { font-style: italic; color: var(--emerald); }
+    .adm-steps { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 1.2rem 1.4rem; margin-bottom: 2rem; font-size: .92rem; color: var(--ink-soft); }
+    .adm-steps b { color: var(--signal-ink); font-family: var(--mono); font-size: .8rem; }
+    .adm-steps ol { margin: .5rem 0 0 1.1rem; display: grid; gap: .35rem; }
+    section.adm { background: var(--paper); border: 1px solid var(--line); border-radius: 20px; padding: clamp(1.4rem, 4vw, 2.2rem); margin-bottom: 1.6rem; }
+    .adm h2.h2 { font-size: 1.8rem; margin-bottom: 1.2rem; }
+    .adm-sub { font-family: var(--mono); font-size: .78rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-mute); margin: 1.6rem 0 .8rem; }
+    .adm-grid { display: grid; gap: 1rem; grid-template-columns: 1fr; }
+    @media (min-width: 680px) { .adm-grid { grid-template-columns: 1fr 1fr; } }
+    .adm-field { display: flex; flex-direction: column; gap: .35rem; }
+    .adm-field.adm-full { grid-column: 1 / -1; }
+    .adm-field > span { font-size: .82rem; color: var(--ink-mute); font-weight: 500; }
+    .adm-field input, .adm-field textarea {
+      font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--line);
+      border-radius: 10px; padding: .7rem .85rem; width: 100%; transition: border-color .2s, box-shadow .2s;
+    }
+    .adm-field textarea { resize: vertical; line-height: 1.5; }
+    .adm-field input:focus, .adm-field textarea:focus { outline: none; border-color: var(--signal-ink); box-shadow: 0 0 0 3px rgba(21,217,129,.15); }
+    .adm-check { display: flex; align-items: center; gap: .55rem; margin-top: 1rem; font-size: .95rem; }
+    .adm-check input { width: 18px; height: 18px; accent-color: var(--emerald); }
+    .adm-hr { border: 0; border-top: 1px solid var(--line); margin: 1.6rem 0; }
+    .adm-note { font-size: .9rem; color: var(--ink-mute); margin-bottom: 1rem; }
+    .adm-muted { color: var(--ink-mute); font-size: .85rem; }
+
+    .adm-bar { display: flex; gap: .8rem; flex-wrap: wrap; align-items: center; }
+    .adm-bar .btn { cursor: pointer; }
+    #adm-saved { font-family: var(--mono); font-size: .75rem; color: var(--signal-ink); opacity: 0; transition: opacity .3s; }
+    #adm-saved.show { opacity: 1; }
+
+    .adm-cases-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.2rem; gap: 1rem; flex-wrap: wrap; }
+    .adm-case { display: grid; grid-template-columns: 72px 1fr auto; gap: 1rem; align-items: center; padding: .8rem; border: 1px solid var(--line); border-radius: 14px; margin-bottom: .7rem; }
+    .adm-case-thumb { width: 72px; height: 48px; border-radius: 8px; overflow: hidden; background: var(--pine); display: grid; place-items: center; color: var(--signal); }
+    .adm-case-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .adm-case-info { display: flex; flex-direction: column; gap: .2rem; min-width: 0; }
+    .adm-case-info strong { font-size: .98rem; }
+    .adm-case-info span { font-family: var(--mono); font-size: .72rem; color: var(--ink-mute); }
+    .adm-case-actions { display: flex; gap: .35rem; flex-wrap: wrap; justify-content: flex-end; }
+    .adm-mini { font: inherit; font-size: .8rem; padding: .4rem .65rem; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); cursor: pointer; transition: border-color .2s, background .2s; }
+    .adm-mini:hover { border-color: var(--signal-ink); }
+    .adm-mini.danger:hover { border-color: #c0392b; color: #c0392b; }
+    .adm-empty { color: var(--ink-mute); }
+
+    .adm-yt-prev { display: flex; align-items: center; gap: .8rem; margin: .2rem 0 .4rem; font-size: .85rem; color: var(--ink-soft); }
+    .adm-yt-prev img { width: 120px; border-radius: 8px; }
+    .adm-yt-prev code { font-family: var(--mono); background: var(--bg-2); padding: .1rem .4rem; border-radius: 5px; }
+
+    #adm-modal { position: fixed; inset: 0; z-index: 9999; background: rgba(11,23,18,.55); backdrop-filter: blur(4px); display: none; padding: 2rem 1rem; overflow-y: auto; }
+    #adm-modal.open { display: block; }
+    .adm-modal-card { max-width: 760px; margin: 0 auto; background: var(--paper); border-radius: 20px; overflow: hidden; box-shadow: 0 40px 90px -30px rgba(11,61,46,.5); }
+    .adm-modal-head, .adm-modal-foot { display: flex; align-items: center; justify-content: space-between; padding: 1.1rem 1.4rem; }
+    .adm-modal-head { border-bottom: 1px solid var(--line); }
+    .adm-modal-head h3 { font-family: var(--serif); font-size: 1.4rem; }
+    .adm-modal-foot { border-top: 1px solid var(--line); gap: .8rem; }
+    .adm-modal-body { padding: 1.4rem; display: grid; gap: 1rem; max-height: 70vh; overflow-y: auto; }
+    .adm-modal-foot .btn { cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="admin">
+    <div class="adm-top">
+      <div>
+        <h1>Panel de <em>Antonio</em></h1>
+        <p class="adm-muted">Tu centro de control. No necesita internet ni servidor.</p>
+      </div>
+      <div class="adm-bar">
+        <span id="adm-saved">Guardado ✓</span>
+        <button class="btn btn-ghost" id="adm-reset" type="button">Restablecer</button>
+        <button class="btn btn-primary" id="adm-dl-data" type="button">Descargar data.js</button>
+      </div>
+    </div>
+
+    <div class="adm-steps">
+      <b>CÓMO USARLO</b>
+      <ol>
+        <li><b>1.</b> Edita tus ajustes y tus casos aquí (se guarda solo en tu navegador).</li>
+        <li><b>2.</b> Pulsa <strong>Descargar data.js</strong> y, en cada caso, <strong>HTML</strong> para bajar su artículo.</li>
+        <li><b>3.</b> Sube esos archivos a Hostinger: <code>data.js</code> a la carpeta <code>/lib/</code> y los <code>caso-XX.html</code> a <code>/articulos/</code> (reemplazando los que haya).</li>
+      </ol>
+      <p class="adm-muted" style="margin-top:.6rem">Consejo: esta página es solo para ti. No hace falta subirla a tu web; úsala en tu ordenador.</p>
+    </div>
+
+    <section class="adm" id="adm-settings"></section>
+
+    <section class="adm">
+      <div class="adm-cases-head">
+        <h2 class="h2" style="margin:0">Casos de la newsletter</h2>
+        <button class="btn btn-signal" id="adm-add" type="button">+ Añadir caso</button>
+      </div>
+      <div id="adm-cases-list"></div>
+    </section>
+  </div>
+
+  <div id="adm-modal"></div>
+
+  <script defer src="lib/data.js?v=20260623g"></script>
+  <script defer src="admin.js?v=20260623g"></script>
+</body>
+</html>
