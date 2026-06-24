@@ -582,6 +582,7 @@ h1, h2, h3, h4 { line-height: 1.04; letter-spacing: -0.02em; font-weight: 500; t
 @media (max-width: 480px) {
   .cookie-banner { padding: .85rem .95rem; bottom: .6rem; }
   .cookie-inner { flex-direction: column; align-items: stretch; justify-content: flex-start; gap: .5rem; }
+  .cookie-text { flex: 0 0 auto; }
   .cookie-title { font-size: .62rem; margin-bottom: .2rem; }
   .cookie-text p:last-child { font-size: .84rem; line-height: 1.45; }
   .cookie-actions { justify-content: flex-end; gap: .5rem; }
