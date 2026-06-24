@@ -471,7 +471,7 @@
     bar.innerHTML =
       '<div class="cookie-inner">' +
         '<div class="cookie-text">' +
-          '<p class="cookie-title">Cookies de analítica</p>' +
+          '<p class="cookie-title">Cookies</p>' +
           '<p>Uso Google Analytics y Microsoft Clarity para entender qué contenido te resulta útil. Nunca para publicidad. <a class="ulink" href="/privacidad.html">Política de privacidad</a>.</p>' +
         '</div>' +
         '<div class="cookie-actions">' +
