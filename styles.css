@@ -580,9 +580,12 @@ h1, h2, h3, h4 { line-height: 1.04; letter-spacing: -0.02em; font-weight: 500; t
 .cookie-actions { display: flex; gap: .6rem; flex: 0 0 auto; align-items: center; }
 .cookie-banner .btn { padding: .65rem 1.2rem; font-size: .85rem; }
 @media (max-width: 480px) {
-  .cookie-banner { padding: 1rem 1.1rem; bottom: .75rem; }
-  .cookie-inner { flex-direction: column; align-items: stretch; }
-  .cookie-actions { justify-content: flex-end; }
+  .cookie-banner { padding: .85rem .95rem; bottom: .6rem; }
+  .cookie-inner { flex-direction: column; align-items: stretch; gap: .5rem; }
+  .cookie-title { display: none; }
+  .cookie-text p:last-child { font-size: .84rem; line-height: 1.45; }
+  .cookie-actions { justify-content: flex-end; gap: .5rem; }
+  .cookie-banner .btn { padding: .55rem .95rem; font-size: .82rem; }
 }
 @media (prefers-reduced-motion: reduce) { .cookie-banner { transition: none; } }
 
