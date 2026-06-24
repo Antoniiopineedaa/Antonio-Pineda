@@ -559,19 +559,31 @@ h1, h2, h3, h4 { line-height: 1.04; letter-spacing: -0.02em; font-weight: 500; t
 .cred span { font-family: var(--mono); font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-mute); }
 @media (min-width: 620px) { .creds { grid-template-columns: repeat(3, 1fr); } }
 
-/* Aviso de cookies (consentimiento RGPD) */
+/* Aviso de cookies — RGPD */
 .cookie-banner {
-  position: fixed; left: 50%; bottom: 1rem; transform: translate(-50%, 150%);
-  z-index: 9400; width: min(680px, calc(100% - 2rem));
-  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .8rem 1.2rem;
-  background: var(--paper); border: 1px solid var(--line); border-radius: 16px;
-  padding: 1rem 1.2rem; box-shadow: 0 24px 60px -28px rgba(11,61,46,.5);
-  transition: transform .5s var(--ease-out);
+  position: fixed; left: 50%; bottom: 1.2rem; transform: translate(-50%, 200%);
+  z-index: 9400; width: min(720px, calc(100% - 1.5rem));
+  background: rgba(243, 246, 241, 0.94);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 1.2rem 1.5rem;
+  box-shadow: 0 0 0 1px rgba(21,217,129,.18) inset, 0 32px 72px -28px rgba(11,61,46,.4);
+  transition: transform .55s var(--ease-out);
 }
 .cookie-banner.is-in { transform: translate(-50%, 0); }
-.cookie-banner p { flex: 1 1 300px; margin: 0; font-size: .88rem; line-height: 1.5; color: var(--ink-soft); }
-.cookie-actions { display: flex; gap: .6rem; flex: 0 0 auto; }
-.cookie-banner .btn { padding: .6rem 1.1rem; font-size: .85rem; }
+.cookie-inner { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .8rem 2rem; }
+.cookie-text { flex: 1 1 260px; }
+.cookie-title { font-family: var(--mono); font-size: .66rem; letter-spacing: .2em; text-transform: uppercase; color: var(--signal-ink); margin-bottom: .4rem; }
+.cookie-text p:last-child { font-size: .88rem; line-height: 1.5; color: var(--ink-soft); margin: 0; }
+.cookie-actions { display: flex; gap: .6rem; flex: 0 0 auto; align-items: center; }
+.cookie-banner .btn { padding: .65rem 1.2rem; font-size: .85rem; }
+@media (max-width: 480px) {
+  .cookie-banner { padding: 1rem 1.1rem; bottom: .75rem; }
+  .cookie-inner { flex-direction: column; align-items: stretch; }
+  .cookie-actions { justify-content: flex-end; }
+}
 @media (prefers-reduced-motion: reduce) { .cookie-banner { transition: none; } }
 
 /* Hitos / stats — 4 tarjetas vivas, sin huecos (4 / 2x2 / 1) */
@@ -699,7 +711,46 @@ h1, h2, h3, h4 { line-height: 1.04; letter-spacing: -0.02em; font-weight: 500; t
 @keyframes borderSpin { to { --ang: 360deg; } }
 
 /* =============================================================
-   20. Reduced motion — solo lo intrusivo
+   20. Mobile — hero, nav, layout
+   ============================================================= */
+
+/* En tablet/móvil el hero-copy tiene max-width: 18ch del base,
+   lo que en pantallas pequeñas colapsa el texto a ~160px.
+   Lo desactivamos por debajo de 960px. */
+@media (max-width: 959px) {
+  .hero-copy { max-width: 100%; }
+}
+
+@media (max-width: 599px) {
+  /* Auroras: reducir para evitar desbordamiento horizontal */
+  .aura-1 { width: 90vw; height: 90vw; left: -16vw; }
+  .aura-2 { width: 80vw; height: 80vw; }
+  .aura-3 { width: 70vw; height: 70vw; }
+
+  /* Hero: compactar altura, reducir foto */
+  .hero { min-height: unset; padding-block: clamp(5.5rem, 13vh, 7rem) 2.5rem; }
+  .hero-grid { gap: 1.2rem; }
+  .hero .display { font-size: clamp(2rem, 8.5vw, 2.8rem); }
+  .hero-sub { margin-top: 1rem; }
+  .hero-cta { margin-top: 1.4rem; gap: .6rem; }
+  .hero-cta .btn { flex: 1 1 auto; justify-content: center; }
+  .hero-cutout img { width: min(200px, 58vw); }
+  .hero-meta { margin-top: 1.4rem; gap: .6rem 1.2rem; }
+  .hero-stat b { font-size: 1.2rem; }
+
+  /* Nav: ocultar botón CTA para dar espacio al hamburger */
+  .nav-right .btn-signal { display: none; }
+  .nav { padding-inline: 1rem; }
+
+  /* Secciones: reducir padding vertical */
+  .section { padding-block: clamp(3rem, 8vh, 5rem); }
+
+  /* Steps: forzar 1 columna en muy pequeño */
+  .steps { grid-template-columns: 1fr; }
+}
+
+/* =============================================================
+   21. Reduced motion — solo lo intrusivo
    ============================================================= */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }

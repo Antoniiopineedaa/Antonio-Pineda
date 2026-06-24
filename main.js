@@ -446,22 +446,38 @@
   }
 
   function initConsent() {
-    if (!DATA.gaId && !DATA.clarityId) return;  // sin analítica => web sin cookies
+    if (!DATA.gaId && !DATA.clarityId) return;
     var choice = null;
-    try { choice = localStorage.getItem("cc_consent"); } catch (e) {}
+    var ts = null;
+    try {
+      choice = localStorage.getItem("cc_consent");
+      ts = parseInt(localStorage.getItem("cc_consent_ts"), 10);
+    } catch (e) {}
+
+    // Re-pedir consentimiento si han pasado más de 365 días
+    if (choice && ts && (Date.now() - ts > 365 * 24 * 60 * 60 * 1000)) {
+      try { localStorage.removeItem("cc_consent"); localStorage.removeItem("cc_consent_ts"); } catch (e) {}
+      choice = null;
+    }
+
     if (choice === "granted") { loadAnalytics(); return; }
     if (choice === "denied") return;
 
     var bar = document.createElement("div");
     bar.className = "cookie-banner";
     bar.setAttribute("role", "dialog");
+    bar.setAttribute("aria-modal", "true");
     bar.setAttribute("aria-label", "Aviso de cookies");
     bar.innerHTML =
-      '<p>Uso cookies de <strong>analítica</strong> (Google Analytics y Microsoft Clarity) para entender qué te interesa y mejorar la web. ' +
-      '<a class="ulink" href="/privacidad.html">Más información</a>.</p>' +
-      '<div class="cookie-actions">' +
-        '<button class="btn btn-ghost" type="button" data-cc="denied">Rechazar</button>' +
-        '<button class="btn btn-signal" type="button" data-cc="granted">Aceptar</button>' +
+      '<div class="cookie-inner">' +
+        '<div class="cookie-text">' +
+          '<p class="cookie-title">Cookies de analítica</p>' +
+          '<p>Uso Google Analytics y Microsoft Clarity para entender qué contenido te resulta útil. Nunca para publicidad. <a class="ulink" href="/privacidad.html">Política de privacidad</a>.</p>' +
+        '</div>' +
+        '<div class="cookie-actions">' +
+          '<button class="btn btn-ghost" type="button" data-cc="denied">Rechazar</button>' +
+          '<button class="btn btn-signal" type="button" data-cc="granted">Aceptar</button>' +
+        '</div>' +
       '</div>';
     document.body.appendChild(bar);
     requestAnimationFrame(function () { bar.classList.add("is-in"); });
@@ -469,7 +485,10 @@
       var b = e.target.closest && e.target.closest("[data-cc]");
       if (!b) return;
       var v = b.getAttribute("data-cc");
-      try { localStorage.setItem("cc_consent", v); } catch (e2) {}
+      try {
+        localStorage.setItem("cc_consent", v);
+        localStorage.setItem("cc_consent_ts", String(Date.now()));
+      } catch (e2) {}
       bar.classList.remove("is-in");
       setTimeout(function () { if (bar.parentNode) bar.parentNode.removeChild(bar); }, 450);
       if (v === "granted") loadAnalytics();
