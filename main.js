@@ -44,6 +44,18 @@
       if (!v) return;
       el.setAttribute("href", key === "contactEmail" ? "mailto:" + v : v);
     });
+
+    // Logo (AP-diana) en la cabecera, junto al nombre
+    var logoBase = location.pathname.indexOf("/articulos/") > -1 ? "../" : "";
+    $$(".brand-mark").forEach(function (bm) {
+      if (bm.querySelector(".brand-logo")) return;
+      var img = document.createElement("img");
+      img.className = "brand-logo";
+      img.src = logoBase + "assets/img/logo.svg";
+      img.alt = "";
+      img.width = 30; img.height = 30;
+      bm.insertBefore(img, bm.firstChild);
+    });
   }
 
   /* ---------------------------------------------------------------------------
