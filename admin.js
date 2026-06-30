@@ -49,7 +49,20 @@
   function load() {
     try {
       var raw = localStorage.getItem(LS_KEY);
-      if (raw) return JSON.parse(raw);
+      if (raw) {
+        var saved = JSON.parse(raw);
+        // Red de seguridad: si el borrador del navegador es viejo y no tiene la
+        // conexión de Beehiiv pero data.js sí la tiene, la recupera. Así, al
+        // descargar data.js desde el panel, nunca se borra la suscripción.
+        var site = window.__SITE__ || {};
+        var bh = site.beehiiv || {};
+        if (saved && saved.config) {
+          if (!saved.config.beehiiv) saved.config.beehiiv = { subscribeUrl: "", embedUrl: "" };
+          if (!saved.config.beehiiv.subscribeUrl && bh.subscribeUrl) saved.config.beehiiv.subscribeUrl = bh.subscribeUrl;
+          if (!saved.config.beehiiv.embedUrl && bh.embedUrl) saved.config.beehiiv.embedUrl = bh.embedUrl;
+        }
+        return saved;
+      }
     } catch (e) {}
     return fromSite();
   }
@@ -164,7 +177,7 @@
 '  <link rel="preconnect" href="https://fonts.googleapis.com" />',
 '  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />',
 '  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400;1,9..144,500&family=Hanken+Grotesk:wght@300;400;500;600&family=Spline+Sans+Mono:wght@400;500&display=swap" />',
-'  <link rel="stylesheet" href="../styles.css?v=20260623h" />',
+'  <link rel="stylesheet" href="../styles.css?v=20260630" />',
 '  <script type="application/ld+json">',
 '  {"@context":"https://schema.org","@type":"Article","headline":' + JSON.stringify(title) + ',"author":{"@type":"Person","name":' + JSON.stringify(c.brand) + '},"datePublished":' + JSON.stringify(n.iso || "") + ',"inLanguage":"es","image":' + JSON.stringify(base + "/assets/img/og-card.png") + ',"mainEntityOfPage":' + JSON.stringify(canonical) + ',"isAccessibleForFree":' + (n.premium ? "false" : "true") + '}',
 '  <\/script>',
@@ -240,8 +253,8 @@ teaserHtml,
 '  <footer class="footer"><div class="container"><div class="footer-bottom" style="border:0"><span>© <span id="year">2026</span> ' + esc(c.brand) + ' · ' + esc(c.role) + '</span><span><a href="../privacidad.html">Privacidad</a> · Divulgación, no consejo médico</span></div></div></footer>',
 '  <script defer src="../lib/gsap.min.js"></script>',
 '  <script defer src="../lib/ScrollTrigger.min.js"></script>',
-'  <script defer src="../lib/data.js?v=20260623h"></script>',
-'  <script defer src="../main.js?v=20260623h"></script>',
+'  <script defer src="../lib/data.js?v=20260630"></script>',
+'  <script defer src="../main.js?v=20260630"></script>',
 '  <script>document.getElementById("year").textContent=new Date().getFullYear();</script>',
 '</body>',
 '</html>',
