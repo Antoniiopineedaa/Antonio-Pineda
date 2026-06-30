@@ -136,49 +136,70 @@
   }
 
   /* ---------------------------------------------------------------------------
-     Suscripción (conector Beehiiv)
-     - Si beehiiv.embedUrl está puesto: incrusta el iframe nativo de Beehiiv.
-     - Si no: el formulario propio redirige a beehiiv.subscribeUrl con el correo.
+     Suscripción + muro de email
+     - Cualquier formulario [data-sub-form] manda el correo a /api/subscribe
+       (que lo da de alta en Beehiiv). Al recibir "ok", DESBLOQUEA el premium.
+     - El desbloqueo se recuerda en el navegador (localStorage) y se aplica a
+       TODOS los artículos a la vez. También se activa con ?unlocked=1 en la URL
+       (el enlace que llevan los correos), para abrir en otro dispositivo de un clic.
      --------------------------------------------------------------------------- */
+  var UNLOCK_KEY = "cc_unlocked";
+
+  function isUnlocked() {
+    try {
+      if (location.search.indexOf("unlocked=1") > -1) localStorage.setItem(UNLOCK_KEY, "1");
+      return localStorage.getItem(UNLOCK_KEY) === "1";
+    } catch (e) { return false; }
+  }
+
+  function revealPremium() {
+    $$("[data-premium]").forEach(function (el) { el.removeAttribute("hidden"); el.hidden = false; });
+    $$("[data-locked]").forEach(function (el) { el.style.display = "none"; });
+  }
+
   function initSubscribe() {
-    var bh = DATA.beehiiv || {};
+    // 1) Si este navegador ya desbloqueó, abre el premium en cualquier página.
+    if (isUnlocked()) revealPremium();
 
-    // Modo embed (iframe nativo de Beehiiv)
-    if (bh.embedUrl) {
-      $$("[data-sub-embed]").forEach(function (slot) {
-        if (slot.dataset.embedBound) return;
-        slot.dataset.embedBound = "1";
-        var form = slot.querySelector(".sub-form");
-        if (form) form.style.display = "none";
-        var ifr = document.createElement("iframe");
-        ifr.src = bh.embedUrl;
-        ifr.title = "Suscríbete";
-        ifr.setAttribute("scrolling", "no");
-        ifr.style.height = "320px";
-        var wrap = slot.querySelector(".sub-embed") || slot;
-        wrap.appendChild(ifr);
-      });
-    }
-
-    // Formulario propio -> redirección a Beehiiv con el email
+    // 2) Conecta todos los formularios de correo (newsletter + muros de artículo).
     $$("[data-sub-form]").forEach(function (form) {
       if (form.dataset.subBound) return;
       form.dataset.subBound = "1";
       var input = form.querySelector('input[type="email"]');
       var msg = form.parentNode.querySelector(".sub-msg");
+      var btn = form.querySelector('button[type="submit"]') || form.querySelector("button");
+
       form.addEventListener("submit", function (e) {
         e.preventDefault();
         if (!form.reportValidity()) return;
         var email = (input && input.value || "").trim();
-        var url = bh.subscribeUrl;
-        if (url) {
-          var go = url + (url.indexOf("?") > -1 ? "&" : "?") + "email=" + encodeURIComponent(email);
-          if (msg) msg.textContent = "Te llevamos a la página segura de suscripción…";
-          window.location.href = go;
-        } else {
-          if (msg) msg.textContent = "Suscripción aún no conectada (pega tu URL de Beehiiv en lib/data.js → beehiiv.subscribeUrl).";
-          console.warn("[subscribe] Falta DATA.beehiiv.subscribeUrl");
-        }
+        if (!email) return;
+        if (btn) btn.disabled = true;
+        if (msg) { msg.textContent = "Un momento…"; msg.style.color = ""; }
+
+        fetch("/api/subscribe", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: email, source: location.pathname })
+        })
+          .then(function (r) {
+            return r.json().catch(function () { return {}; }).then(function (d) { return { ok: r.ok, data: d }; });
+          })
+          .then(function (res) {
+            if (res.ok) {
+              try { localStorage.setItem(UNLOCK_KEY, "1"); } catch (e) {}
+              if (input) input.value = "";
+              if (msg) msg.textContent = "¡Listo! Te avisaré de cada caso nuevo. ✅";
+              revealPremium();
+            } else {
+              if (btn) btn.disabled = false;
+              if (msg) msg.textContent = (res.data && res.data.error) || "Hubo un problema. Inténtalo de nuevo.";
+            }
+          })
+          .catch(function () {
+            if (btn) btn.disabled = false;
+            if (msg) msg.textContent = "No se pudo conectar. Inténtalo de nuevo.";
+          });
       });
     });
   }

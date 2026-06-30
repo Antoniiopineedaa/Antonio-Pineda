@@ -30,17 +30,12 @@
         newsletterName: s.newsletterName || "Caso Cero",
         newsletterTagline: s.newsletterTagline || "",
         youtubeUrl: s.youtubeUrl || "",
-        kofiUrl: s.kofiUrl || "",
         contactEmail: s.contactEmail || "",
         gaId: s.gaId || "",
         social: {
           youtube: (s.social && s.social.youtube) || "",
           linkedin: (s.social && s.social.linkedin) || "",
           instagram: (s.social && s.social.instagram) || ""
-        },
-        beehiiv: {
-          subscribeUrl: (s.beehiiv && s.beehiiv.subscribeUrl) || "",
-          embedUrl: (s.beehiiv && s.beehiiv.embedUrl) || ""
         }
       },
       newsletters: (s.newsletters || []).map(function (n) { return Object.assign({}, n); })
@@ -50,20 +45,7 @@
   function load() {
     try {
       var raw = localStorage.getItem(LS_KEY);
-      if (raw) {
-        var saved = JSON.parse(raw);
-        // Red de seguridad: si el borrador del navegador es viejo y no tiene la
-        // conexión de Beehiiv pero data.js sí la tiene, la recupera. Así, al
-        // descargar data.js desde el panel, nunca se borra la suscripción.
-        var site = window.__SITE__ || {};
-        var bh = site.beehiiv || {};
-        if (saved && saved.config) {
-          if (!saved.config.beehiiv) saved.config.beehiiv = { subscribeUrl: "", embedUrl: "" };
-          if (!saved.config.beehiiv.subscribeUrl && bh.subscribeUrl) saved.config.beehiiv.subscribeUrl = bh.subscribeUrl;
-          if (!saved.config.beehiiv.embedUrl && bh.embedUrl) saved.config.beehiiv.embedUrl = bh.embedUrl;
-        }
-        return saved;
-      }
+      if (raw) return JSON.parse(raw);
     } catch (e) {}
     return fromSite();
   }
@@ -111,11 +93,9 @@
       brand: c.brand, role: c.role, field: c.field,
       newsletterName: c.newsletterName, newsletterTagline: c.newsletterTagline,
       youtubeUrl: c.youtubeUrl,
-      kofiUrl: c.kofiUrl,
       social: c.social,
       contactEmail: c.contactEmail,
       gaId: c.gaId,
-      beehiiv: c.beehiiv,
       siteUrl: c.siteUrl,
       newsletters: state.newsletters.map(function (n) {
         var clean = {};
@@ -148,12 +128,13 @@
     var title = n.title || "Caso";
     var desc = n.dek || "";
     var category = a.category || "Caso clínico";
-    var gateTitle = a.gateTitle || ("Aprende a aplicar esto a tu salud");
-    var gateText = a.gateText || ("La parte práctica es para miembros de " + c.newsletterName + ". Hazte miembro y aplícalo a tu vida.");
-    var gateBtn = a.gateBtn || "Quiero cuidarme";
+    var gateTitle = a.gateTitle || "Sigue leyendo gratis";
+    var gateText = a.gateText || ("Déjame tu correo y te desbloqueo el resto del caso —y todos los demás—. Te avisaré de cada caso nuevo. Sin spam.");
+    var gateBtn = a.gateBtn || "Desbloquear";
     var teaserTitle = a.teaserTitle || "Lo que tú puedes hacer";
     var freeHtml = paras(a.free) || "        <p>Escribe aquí el caso (el gancho que se ve gratis).</p>";
     var teaserHtml = paras(a.teaser) || "            <p>Escribe aquí 1 o 2 párrafos de adelanto de la parte práctica.</p>";
+    var premiumHtml = paras(a.premiumFull) || "          <p>Escribe aquí la parte que se desbloquea cuando el lector deja su correo.</p>";
 
     return [
 '<!DOCTYPE html>',
@@ -179,7 +160,7 @@
 '  <link rel="preconnect" href="https://fonts.googleapis.com" />',
 '  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />',
 '  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400;1,9..144,500&family=Hanken+Grotesk:wght@300;400;500;600&family=Spline+Sans+Mono:wght@400;500&display=swap" />',
-'  <link rel="stylesheet" href="../styles.css?v=20260630b" />',
+'  <link rel="stylesheet" href="../styles.css?v=20260630c" />',
 '  <script type="application/ld+json">',
 '  {"@context":"https://schema.org","@type":"Article","headline":' + JSON.stringify(title) + ',"author":{"@type":"Person","name":' + JSON.stringify(c.brand) + '},"datePublished":' + JSON.stringify(n.iso || "") + ',"inLanguage":"es","image":' + JSON.stringify(base + "/assets/img/og-card.png") + ',"mainEntityOfPage":' + JSON.stringify(canonical) + ',"isAccessibleForFree":' + (n.premium ? "false" : "true") + '}',
 '  <\/script>',
@@ -230,18 +211,28 @@
 freeHtml,
 '      </div>',
 '      <div class="paywall" id="seguir-leyendo">',
-'        <div class="paywall-fade" aria-hidden="true">',
-'          <div class="prose">',
-'            <h3>' + esc(teaserTitle) + '</h3>',
+'        <div data-locked>',
+'          <div class="paywall-fade" aria-hidden="true">',
+'            <div class="prose">',
+'              <h3>' + esc(teaserTitle) + '</h3>',
 teaserHtml,
+'            </div>',
+'          </div>',
+'          <div class="paywall-gate">',
+'            <div class="lock" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div>',
+'            <h3>' + esc(gateTitle) + '</h3>',
+'            <p>' + esc(gateText) + '</p>',
+'            <form class="sub-form" data-sub-form novalidate>',
+'              <input type="email" name="email" placeholder="tu@correo.com" autocomplete="email" required aria-label="Tu correo electrónico" />',
+'              <button class="btn btn-signal" type="submit" data-hover>' + esc(gateBtn) + ' <span class="arrow">→</span></button>',
+'            </form>',
+'            <p class="sub-msg" role="status" aria-live="polite"></p>',
+'            <p class="sub-note">Es gratis. Te das de baja cuando quieras.</p>',
 '          </div>',
 '        </div>',
-'        <div class="paywall-gate">',
-'          <div class="lock" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div>',
-'          <h3>' + esc(gateTitle) + '</h3>',
-'          <p>' + esc(gateText) + '</p>',
-'          <a class="btn btn-signal" data-href="kofiUrl" href="' + esc(c.kofiUrl || "#") + '" target="_blank" rel="noopener" data-hover>' + esc(gateBtn) + ' <span class="arrow">→</span></a>',
-'          <p class="sub-note">Pago seguro vía Ko-fi · Sin permanencia · Cancela cuando quieras.</p>',
+'        <div class="prose premium reveal" data-premium hidden>',
+'          <h3>' + esc(teaserTitle) + '</h3>',
+premiumHtml,
 '        </div>',
 '      </div>',
 '      <p class="sub-note" style="max-width:680px;margin:2.5rem auto 0;text-align:center;color:var(--ink-mute)">Divulgación con fines educativos, no consejo médico. Si algo te preocupa, acude a tu médico.</p>',
@@ -250,8 +241,8 @@ teaserHtml,
 '  <footer class="footer"><div class="container"><div class="footer-bottom" style="border:0"><span>© <span id="year">2026</span> ' + esc(c.brand) + ' · ' + esc(c.role) + '</span><span><a href="../privacidad.html">Privacidad</a> · Divulgación, no consejo médico</span></div></div></footer>',
 '  <script defer src="../lib/gsap.min.js"></script>',
 '  <script defer src="../lib/ScrollTrigger.min.js"></script>',
-'  <script defer src="../lib/data.js?v=20260630b"></script>',
-'  <script defer src="../main.js?v=20260630b"></script>',
+'  <script defer src="../lib/data.js?v=20260630c"></script>',
+'  <script defer src="../main.js?v=20260630c"></script>',
 '  <script>document.getElementById("year").textContent=new Date().getFullYear();</script>',
 '</body>',
 '</html>',
@@ -277,17 +268,12 @@ teaserHtml,
         field("Tu dominio (para SEO)", c.siteUrl, "siteUrl", "https://tudominio.com") +
         field("Correo de contacto", c.contactEmail, "contactEmail", "hola@...", "email") +
         field("Canal de YouTube", c.youtubeUrl, "youtubeUrl", "https://youtube.com/@...") +
-        field("Ko-fi (cobro del premium)", c.kofiUrl, "kofiUrl", "https://ko-fi.com/tunombre") +
         field("YouTube (social)", c.social.youtube, "social.youtube") +
         field("LinkedIn", c.social.linkedin, "social.linkedin") +
         field("Instagram", c.social.instagram, "social.instagram") +
         field("Google Analytics (ID)", c.gaId, "gaId", "G-XXXXXXXXXX") +
       '</div>' +
-      '<h3 class="adm-sub">Beehiiv (cobro y suscripción)</h3>' +
-      '<div class="adm-grid">' +
-        field("URL de suscripción de Beehiiv", c.beehiiv.subscribeUrl, "beehiiv.subscribeUrl", "https://tunombre.beehiiv.com/subscribe") +
-        field("Embed de Beehiiv (opcional)", c.beehiiv.embedUrl, "beehiiv.embedUrl", "https://embeds.beehiiv.com/...") +
-      '</div>';
+      '<p class="adm-note" style="margin-top:1rem">Los correos se captan con Beehiiv vía la función <code>/api/subscribe</code>. La clave de Beehiiv se configura en Vercel (variables de entorno), no aquí.</p>';
 
     $$("[data-cfg]", $("#adm-settings")).forEach(function (inp) {
       inp.addEventListener("input", function () {
@@ -357,18 +343,19 @@ teaserHtml,
           '<label class="adm-field"><span>Vídeo de YouTube (pega el enlace o el ID)</span>' +
             '<input type="text" id="adm-yt" value="' + esc(n.youtubeId) + '" placeholder="https://youtu.be/XXXX o el ID" /></label>' +
           '<div id="adm-yt-prev" class="adm-yt-prev"></div>' +
-          '<label class="adm-check"><input type="checkbox" id="adm-premium" ' + (n.premium ? "checked" : "") + ' /> <span>Es de pago (Premium)</span></label>' +
+          '<label class="adm-check"><input type="checkbox" id="adm-premium" ' + (n.premium ? "checked" : "") + ' /> <span>Lleva muro (se desbloquea al dejar el correo)</span></label>' +
           '<hr class="adm-hr" />' +
           '<p class="adm-note">Contenido del artículo. Separa los párrafos con una línea en blanco.</p>' +
           efieldFull("Categoría (sale junto al número)", a.category, "_category", "Corazón") +
           efieldArea("Texto GRATIS (el gancho que se ve)", a.free, "_free", 7) +
           efieldFull("Título del adelanto difuminado", a.teaserTitle, "_teaserTitle", "Lo que tú puedes hacer hoy") +
           efieldArea("Adelanto difuminado (1 o 2 párrafos)", a.teaser, "_teaser", 4) +
+          efieldArea("Contenido que se DESBLOQUEA con el correo", a.premiumFull, "_premiumFull", 8) +
           '<div class="adm-grid">' +
-            efieldFull("Título del muro", a.gateTitle, "_gateTitle", "Aprende a cuidarte con este caso") +
-            efieldFull("Texto del botón", a.gateBtn, "_gateBtn", "Quiero cuidarme") +
+            efieldFull("Título del muro", a.gateTitle, "_gateTitle", "Sigue leyendo gratis") +
+            efieldFull("Texto del botón", a.gateBtn, "_gateBtn", "Desbloquear") +
           '</div>' +
-          efieldFull("Texto del muro", a.gateText, "_gateText", "La parte práctica te la cuento entera en la newsletter…") +
+          efieldFull("Texto del muro", a.gateText, "_gateText", "Déjame tu correo y te desbloqueo el resto…") +
         '</div>' +
         '<div class="adm-modal-foot">' +
           '<button class="btn btn-ghost" id="adm-cancel">Cancelar</button>' +
@@ -386,7 +373,7 @@ teaserHtml,
       n.file = slugFile(n.num);
       n._article = {
         category: val("_category"), free: val("_free"),
-        teaserTitle: val("_teaserTitle"), teaser: val("_teaser"),
+        teaserTitle: val("_teaserTitle"), teaser: val("_teaser"), premiumFull: val("_premiumFull"),
         gateTitle: val("_gateTitle"), gateBtn: val("_gateBtn"), gateText: val("_gateText")
       };
     }

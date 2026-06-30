@@ -24,7 +24,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400;1,9..144,500&family=Hanken+Grotesk:wght@300;400;500;600&family=Spline+Sans+Mono:wght@400;500&display=swap" />
-  <link rel="stylesheet" href="../styles.css?v=20260630b" />
+  <link rel="stylesheet" href="../styles.css?v=20260630c" />
 
   <script type="application/ld+json">
   {
@@ -37,7 +37,7 @@
     "inLanguage": "es",
     "image": "https://antoniopinedaguerrero.com/assets/img/og-card.png",
     "mainEntityOfPage": "https://antoniopinedaguerrero.com/articulos/caso-01.html",
-    "isAccessibleForFree": false
+    "isAccessibleForFree": true
   }
   </script>
 </head>
@@ -79,7 +79,7 @@
        3) Lo que va ANTES de <div class="paywall"> se ve gratis (el caso, el gancho).
           Lo que va DENTRO de "paywall-fade" sale difuminado: es un ADELANTO de la
           parte práctica (cómo aplicarlo a tu salud), solo 1 o 2 párrafos.
-          La parte práctica completa la entregas por Ko-fi a tus miembros de pago.
+          Lo que va DENTRO de "data-premium" se revela cuando el lector deja su correo.
        =========================================================================== -->
   <main id="main" class="page">
     <article class="article container">
@@ -109,25 +109,44 @@
         <p>Porque hay corazones que parecen perfectos y son una trampa de relojería: laten bien durante años y eligen el peor momento para fallar. Cómo se llama esa trampa lo cuento en el vídeo. Pero quédate con esto, que es lo que de verdad te toca a ti: casi siempre <strong>avisa antes</strong>. Y casi siempre alguien decidió no hacer caso.</p>
       </div>
 
-      <!-- ===== MURO (adelanto de la parte práctica) ===== -->
+      <!-- ===== MURO DE EMAIL  (deja tu correo y se desbloquea todo) ===== -->
       <div class="paywall" id="seguir-leyendo">
-        <div class="paywall-fade" aria-hidden="true">
-          <div class="prose">
-            <h3>Lo que tú puedes hacer hoy</h3>
-            <p>No hace falta que seas atleta para que esto te importe. Hay tres cosas que cualquiera puede revisar en sí mismo y en su familia, y la primera se hace con una sola pregunta en la mesa de Navidad…</p>
-            <p>La segunda es una señal que mucha gente nota y atribuye al cansancio, cuando en realidad significa lo contrario. Si te pasa al hacer esfuerzo, lo que conviene hacer es…</p>
+
+        <!-- BLOQUEADO: vista difuminada + captura de correo (se oculta al desbloquear) -->
+        <div data-locked>
+          <div class="paywall-fade" aria-hidden="true">
+            <div class="prose">
+              <h3>Lo que tú puedes hacer hoy</h3>
+              <p>No hace falta que seas atleta para que esto te importe. Hay tres cosas que cualquiera puede revisar en sí mismo y en su familia, y la primera se hace con una sola pregunta en la mesa de Navidad…</p>
+              <p>La segunda es una señal que mucha gente nota y atribuye al cansancio, cuando en realidad significa lo contrario. Si te pasa al hacer esfuerzo, lo que conviene hacer es…</p>
+            </div>
+          </div>
+
+          <div class="paywall-gate">
+            <div class="lock" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+            </div>
+            <h3>Sigue leyendo gratis</h3>
+            <p>Déjame tu correo y te desbloqueo el resto del caso —y todos los demás—. Además te avisaré cada vez que publique uno nuevo. Sin spam.</p>
+            <form class="sub-form" data-sub-form novalidate>
+              <input type="email" name="email" placeholder="tu@correo.com" autocomplete="email" required aria-label="Tu correo electrónico" />
+              <button class="btn btn-signal" type="submit" data-hover>Desbloquear <span class="arrow">→</span></button>
+            </form>
+            <p class="sub-msg" role="status" aria-live="polite"></p>
+            <p class="sub-note">Es gratis. Te das de baja cuando quieras.</p>
           </div>
         </div>
 
-        <div class="paywall-gate">
-          <div class="lock" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
-          </div>
-          <h3>Aprende a cuidar tu corazón con este caso</h3>
-          <p>La parte práctica (qué revisar, qué vigilar y cuándo preocuparte) es para miembros de <span data-bind="newsletterName" style="font-style:italic">Caso Cero</span>. Hazte miembro y aplícalo a tu vida.</p>
-          <a class="btn btn-signal" data-href="kofiUrl" href="https://ko-fi.com/antoniopinedaguerrero" target="_blank" rel="noopener" data-hover>Quiero cuidarme <span class="arrow">→</span></a>
-          <p class="sub-note">Pago seguro vía Ko-fi · Sin permanencia · Cancela cuando quieras.</p>
+        <!-- DESBLOQUEADO: el contenido real (oculto hasta dar el correo) -->
+        <div class="prose premium reveal" data-premium hidden>
+          <h3>Lo que tú puedes hacer hoy</h3>
+          <p>No hace falta que seas atleta para que esto te importe. Hay tres cosas sencillas que cualquiera puede revisar en sí mismo y en su familia.</p>
+          <p><strong>1. Pregunta en casa.</strong> En la próxima comida familiar, pregunta si ha habido <em>muertes súbitas o desmayos sin explicación en personas jóvenes</em> de la familia. No es una charla agradable, pero un antecedente así es la pista más valiosa que existe: muchas de estas alteraciones del corazón son hereditarias y se rastrean por el árbol familiar.</p>
+          <p><strong>2. No normalices los avisos del esfuerzo.</strong> Mareo, palpitaciones fuertes, dolor en el pecho o un desmayo <em>mientras haces ejercicio</em> no son "estar en baja forma": son señales de que el corazón pide ayuda justo cuando más se le exige. Si te pasa al esfuerzo, no lo dejes correr: párate y cuéntaselo a tu médico.</p>
+          <p><strong>3. Un chequeo a tiempo vale oro.</strong> Si hay antecedentes familiares o has notado alguno de esos avisos, pide que lo valoren. Una prueba tan simple como un electrocardiograma puede destapar muchas de estas "trampas" silenciosas antes de que den el susto.</p>
+          <p>El caso de Marcos no iba de mala suerte. Iba de señales que estuvieron ahí y que nadie miró a tiempo. Tú sí puedes mirar.</p>
         </div>
+
       </div>
 
       <p class="sub-note" style="max-width:680px;margin:2.5rem auto 0;text-align:center;color:var(--ink-mute)">
@@ -172,8 +191,8 @@
 
   <script defer src="../lib/gsap.min.js"></script>
   <script defer src="../lib/ScrollTrigger.min.js"></script>
-  <script defer src="../lib/data.js?v=20260630b"></script>
-  <script defer src="../main.js?v=20260630b"></script>
+  <script defer src="../lib/data.js?v=20260630c"></script>
+  <script defer src="../main.js?v=20260630c"></script>
   <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
 </body>
 </html>

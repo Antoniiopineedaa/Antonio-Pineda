@@ -1,0 +1,13 @@
+{
+  "name": "caso-cero",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Web de Antonio Pineda (Caso Cero). Sitio estático + funciones de Vercel.",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "dev": "node tools/server.cjs"
+  }
+}
