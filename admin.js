@@ -30,6 +30,7 @@
         newsletterName: s.newsletterName || "Caso Cero",
         newsletterTagline: s.newsletterTagline || "",
         youtubeUrl: s.youtubeUrl || "",
+        kofiUrl: s.kofiUrl || "",
         contactEmail: s.contactEmail || "",
         gaId: s.gaId || "",
         social: {
@@ -110,6 +111,7 @@
       brand: c.brand, role: c.role, field: c.field,
       newsletterName: c.newsletterName, newsletterTagline: c.newsletterTagline,
       youtubeUrl: c.youtubeUrl,
+      kofiUrl: c.kofiUrl,
       social: c.social,
       contactEmail: c.contactEmail,
       gaId: c.gaId,
@@ -147,7 +149,7 @@
     var desc = n.dek || "";
     var category = a.category || "Caso clínico";
     var gateTitle = a.gateTitle || ("Aprende a aplicar esto a tu salud");
-    var gateText = a.gateText || ("La parte práctica te la cuento entera en " + c.newsletterName + ". Suscríbete y aplícalo a tu vida.");
+    var gateText = a.gateText || ("La parte práctica es para miembros de " + c.newsletterName + ". Hazte miembro y aplícalo a tu vida.");
     var gateBtn = a.gateBtn || "Quiero cuidarme";
     var teaserTitle = a.teaserTitle || "Lo que tú puedes hacer";
     var freeHtml = paras(a.free) || "        <p>Escribe aquí el caso (el gancho que se ve gratis).</p>";
@@ -177,7 +179,7 @@
 '  <link rel="preconnect" href="https://fonts.googleapis.com" />',
 '  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />',
 '  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400;1,9..144,500&family=Hanken+Grotesk:wght@300;400;500;600&family=Spline+Sans+Mono:wght@400;500&display=swap" />',
-'  <link rel="stylesheet" href="../styles.css?v=20260630" />',
+'  <link rel="stylesheet" href="../styles.css?v=20260630b" />',
 '  <script type="application/ld+json">',
 '  {"@context":"https://schema.org","@type":"Article","headline":' + JSON.stringify(title) + ',"author":{"@type":"Person","name":' + JSON.stringify(c.brand) + '},"datePublished":' + JSON.stringify(n.iso || "") + ',"inLanguage":"es","image":' + JSON.stringify(base + "/assets/img/og-card.png") + ',"mainEntityOfPage":' + JSON.stringify(canonical) + ',"isAccessibleForFree":' + (n.premium ? "false" : "true") + '}',
 '  <\/script>',
@@ -234,17 +236,12 @@ freeHtml,
 teaserHtml,
 '          </div>',
 '        </div>',
-'        <div class="paywall-gate" data-sub-embed>',
+'        <div class="paywall-gate">',
 '          <div class="lock" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div>',
 '          <h3>' + esc(gateTitle) + '</h3>',
 '          <p>' + esc(gateText) + '</p>',
-'          <form class="sub-form" data-sub-form novalidate>',
-'            <input type="email" name="email" placeholder="tu@correo.com" autocomplete="email" required aria-label="Tu correo electrónico" />',
-'            <button class="btn btn-signal" type="submit" data-hover>' + esc(gateBtn) + ' <span class="arrow">→</span></button>',
-'          </form>',
-'          <div class="sub-embed"></div>',
-'          <p class="sub-msg" role="status" aria-live="polite"></p>',
-'          <p class="sub-note">Pago seguro vía Beehiiv · Sin permanencia · Baja cuando quieras.</p>',
+'          <a class="btn btn-signal" data-href="kofiUrl" href="' + esc(c.kofiUrl || "#") + '" target="_blank" rel="noopener" data-hover>' + esc(gateBtn) + ' <span class="arrow">→</span></a>',
+'          <p class="sub-note">Pago seguro vía Ko-fi · Sin permanencia · Cancela cuando quieras.</p>',
 '        </div>',
 '      </div>',
 '      <p class="sub-note" style="max-width:680px;margin:2.5rem auto 0;text-align:center;color:var(--ink-mute)">Divulgación con fines educativos, no consejo médico. Si algo te preocupa, acude a tu médico.</p>',
@@ -253,8 +250,8 @@ teaserHtml,
 '  <footer class="footer"><div class="container"><div class="footer-bottom" style="border:0"><span>© <span id="year">2026</span> ' + esc(c.brand) + ' · ' + esc(c.role) + '</span><span><a href="../privacidad.html">Privacidad</a> · Divulgación, no consejo médico</span></div></div></footer>',
 '  <script defer src="../lib/gsap.min.js"></script>',
 '  <script defer src="../lib/ScrollTrigger.min.js"></script>',
-'  <script defer src="../lib/data.js?v=20260630"></script>',
-'  <script defer src="../main.js?v=20260630"></script>',
+'  <script defer src="../lib/data.js?v=20260630b"></script>',
+'  <script defer src="../main.js?v=20260630b"></script>',
 '  <script>document.getElementById("year").textContent=new Date().getFullYear();</script>',
 '</body>',
 '</html>',
@@ -280,6 +277,7 @@ teaserHtml,
         field("Tu dominio (para SEO)", c.siteUrl, "siteUrl", "https://tudominio.com") +
         field("Correo de contacto", c.contactEmail, "contactEmail", "hola@...", "email") +
         field("Canal de YouTube", c.youtubeUrl, "youtubeUrl", "https://youtube.com/@...") +
+        field("Ko-fi (cobro del premium)", c.kofiUrl, "kofiUrl", "https://ko-fi.com/tunombre") +
         field("YouTube (social)", c.social.youtube, "social.youtube") +
         field("LinkedIn", c.social.linkedin, "social.linkedin") +
         field("Instagram", c.social.instagram, "social.instagram") +
