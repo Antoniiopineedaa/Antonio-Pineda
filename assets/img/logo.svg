@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="800" height="800">
+  <rect width="800" height="800" rx="200" fill="#0B3D2E"/>
+  <circle cx="400" cy="400" r="300" fill="none" stroke="#15D981" stroke-width="15" opacity="0.5"/>
+  <circle cx="400" cy="400" r="245" fill="none" stroke="#15D981" stroke-width="30"/>
+  <text x="400" y="490" text-anchor="middle" font-family="Fraunces, Georgia, 'Times New Roman', serif" font-weight="600" font-size="240" letter-spacing="-8" fill="#EEF4EC">AP</text>
+</svg>
